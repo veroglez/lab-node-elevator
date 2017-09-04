@@ -4,7 +4,7 @@ class Elevator {
   constructor(){
     this.floor      = 0;
     this.MAXFLOOR   = 10;
-    this.direction  = 0;
+    this.direction  = 'up';
     this.requests   = [];
     this.waitingList = [];
     this.passengers = [];
@@ -24,43 +24,37 @@ class Elevator {
   update() {
     this.log();
   }
+
   _passengersEnter() {
-    for(let i=0; i<this.waitingList.length; i++){
-      if(this.waitingList[i].originFloor === this.floor){
-        this.passengers.push(this.waitingList[i]);
-        console.log(`${this.waitingList[i].name} has entered in the elevator`);
-        this.requests.push(this.waitingList[i].destinationFloor);
-        this.waitingList.splice(i,1);
+    this.waitingList.forEach( (e) => {
+      if(e.originFloor === this.floor){
+        console.log(`${e.name} has enter the elevator`);
+        this.requests.push(e.destinationFloor);
+        this.passengers.push(e);
       }
-    }
+    });
+    this.waitingList = this.waitingList.filter( (element) => element.originFloor !== this.floor);
   }
+
   _passengersLeave() {
-    for(let i=0; i<this.passengers.length; i++){
-      if(this.passengers[i].destinationFloor === this.floor){
-        console.log(`${this.passengers[i].name} has left in the elevator`);
-        this.passengers.splice(i,1);
+    this.passengers.forEach( (e) => {
+      if(e.destinationFloor === this.floor){
+        console.log(`${e.name} has left the elevator`);
       }
-    }
+    });
+    this.passengers = this.passengers.filter( (element) => element.destinationFloor !== this.floor);
   }
+
   floorUp() {
     this.direction = 'up';
-    if(this.floor < this.MAXFLOOR){
-      this.floor += 1;
-    }else{
-      this.stop();
-      console.log('You are in the last floor');
-    }
+    return (this.floor < this.MAXFLOOR) ? this.floor += 1 : this.stop();
   }
+
   floorDown() {
     this.direction = 'down';
-    if ( this.floor > 0) {
-      this.floor -= 1 ;
-    }else{
-      this.stop();
-      console.log('You are in the first floor');
-    }
-
+    return (this.floor > 0) ? this.floor -= 1 : this.stop();
   }
+
   call( person ) {
     this.waitingList.push( person );
     this.requests.push( person.originFloor );
