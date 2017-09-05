@@ -13,7 +13,11 @@ class Elevator {
   start() {
     this.startElevator = setInterval( () => {
       this.update();
-      this.floorUp();
+      if( this.direction == 'up' ){
+        this.floorUp();
+      }else if( this.direction == 'down' ){
+        this.floorDown();
+      }
       this._passengersLeave();
       this._passengersEnter();
     }, 1000);
@@ -46,12 +50,10 @@ class Elevator {
   }
 
   floorUp() {
-    this.direction = 'up';
-    return (this.floor < this.MAXFLOOR) ? this.floor += 1 : this.stop();
+    return (this.floor < this.MAXFLOOR) ? this.floor += 1 : this.direction = "down";
   }
 
   floorDown() {
-    this.direction = 'down';
     return (this.floor > 0) ? this.floor -= 1 : this.stop();
   }
 
